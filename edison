@@ -64,8 +64,8 @@
     <label>外送平台抽成（％）*</label>
     <input type="number" id="commission" placeholder="例如：30" />
 
-    <label>食材成本（元）*</label>
-    <input type="number" id="costFood" placeholder="例如：40" />
+    <label>食材成本（元）</label>
+    <input type="number" id="costFood" placeholder="可留空，預設為 0" />
 
     <label>其他成本（元）</label>
     <input type="number" id="costOther" placeholder="可留空" />
@@ -82,14 +82,14 @@
     function calculate() {
       const storePrice = parseFloat(document.getElementById('storePrice').value);
       const commission = parseFloat(document.getElementById('commission').value);
-      const costFood = parseFloat(document.getElementById('costFood').value);
+      const costFood = parseFloat(document.getElementById('costFood').value) || 0;
       const costOther = parseFloat(document.getElementById('costOther').value) || 0;
       const targetProfitRate = parseFloat(document.getElementById('targetProfitRate').value);
 
       const resultDiv = document.getElementById('result');
 
-      if (isNaN(storePrice) || isNaN(commission) || isNaN(costFood)) {
-        resultDiv.innerHTML = "<span style='color:red;'>請填寫所有必要欄位（*）</span>";
+      if (isNaN(storePrice) || isNaN(commission)) {
+        resultDiv.innerHTML = "<span style='color:red;'>請填寫必要欄位（店內售價與抽成）</span>";
         return;
       }
 
