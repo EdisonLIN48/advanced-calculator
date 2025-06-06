@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>進階外送平台抽成試算器</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
+      margin: 0;
+      padding: 20px;
+    }
+    .container {
+      max-width: 500px;
+      margin: auto;
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    label {
+      display: block;
+      margin-top: 10px;
+    }
+    input {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      font-size: 16px;
+      box-sizing: border-box;
+    }
+    button {
+      width: 100%;
+      padding: 12px;
+      margin-top: 20px;
+      background: #007BFF;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+    }
+    .result {
+      margin-top: 20px;
+      font-weight: bold;
+      color: #333;
+    }
+    .highlight {
+      color: #007BFF;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>進階外送平台抽成試算器</h2>
+
+    <label>店內售價（元）*</label>
+    <input type="number" id="storePrice" placeholder="例如：100" />
+
+    <label>外送平台抽成（％）*</label>
+    <input type="number" id="commission" placeholder="例如：30" />
+
+    <label>食材成本（元）*</label>
+    <input type="number" id="costFood" placeholder="例如：40" />
+
+    <label>其他成本（元）</label>
+    <input type="number" id="costOther" placeholder="可留空" />
+
+    <label>希望利潤率（％）</label>
+    <input type="number" id="targetProfitRate" placeholder="例如：20（可留空）" />
+
+    <button onclick="calculate()">開始試算</button>
+
+    <div class="result" id="result"></div>
+  </div>
+
+  <script>
+    function calculate() {
+      const storePrice = parseFloat(document.getElementById('storePrice').value);
+      const commission = parseFloat(document.getElementById('commission').value);
+      const costFood = parseFloat(document.getElementById('costFood').value);
+      const costOther = parseFloat(document.getElementById('costOther').value) || 0;
+      const targetProfitRate = parseFloat(document.getElementById('targetProfitRate').value);
+
+      const resultDiv = document.getElementById('result');
+
+      if (isNaN(storePrice) || isNaN(commission) || isNaN(costFood)) {
+        resultDiv.innerHTML = "<span style='color:red;'>請填寫所有必要欄位（*）</span>";
+        return;
+      }
+
+      const commissionRate = commission / 100;
+      const platformRevenue = storePrice * (1 - commissionRate);
+      const totalCost = costFood + costOther;
+      const profit = platformRevenue - totalCost;
+      const actualProfitRate = (profit / platformRevenue) * 100;
+
+      let output = `
+        平台實得金額：<span class="highlight">${platformRevenue.toFixed(2)} 元</span><br>
+        成本總計：<span class="highlight">${totalCost.toFixed(2)} 元</span><br>
+        利潤金額：<span class="highlight">${profit.toFixed(2)} 元</span><br>
+        實際利潤率：<span class="highlight">${actualProfitRate.toFixed(1)}%</span><br>
+      `;
+
+      if (!isNaN(targetProfitRate)) {
+        const targetRate = targetProfitRate / 100;
+        const requiredRevenue = totalCost / (1 - targetRate);
+        const requiredPrice = requiredRevenue / (1 - commissionRate);
+        output += `<br>為達到 <strong>${targetProfitRate}%</strong> 利潤率，建議售價應為：<span class="highlight">${requiredPrice.toFixed(0)} 元</span>`;
+      }
+
+      resultDiv.innerHTML = output;
+    }
+  </script>
+</body>
+</html>
